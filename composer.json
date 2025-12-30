@@ -1,0 +1,16 @@
+{
+    "name": "lynx/lynx",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Lynx\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dmitrii Zaitsev",
+            "email": "dimazaicev88@gmail.com"
+        }
+    ],
+    "require": {}
+}
