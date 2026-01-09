@@ -3,7 +3,7 @@
 namespace Lynx\Creator;
 
 #[Table(name: 'user')]
-class UserTable
+class UserModel
 {
     #[Column(name: "id", notNull: true, autoIncrement: true)]
     public int $id;
