@@ -8,7 +8,6 @@ readonly class DataCreateEntity
         public string $className,
         public string $tableName,
         public string $propertiesCode,
-        public string $methodsCode
     )
     {
     }

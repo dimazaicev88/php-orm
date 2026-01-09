@@ -23,8 +23,6 @@ class CreateEntity implements IEntityTemplate
             protected string \$table = '{$this->dataCreateEntity->tableName}';
             
             {$this->dataCreateEntity->propertiesCode}
-                
-            {$this->dataCreateEntity->methodsCode}
                              
             public function save(): bool  {
                 if (!empty(\$this->errors)) {
@@ -34,7 +32,7 @@ class CreateEntity implements IEntityTemplate
                 \$pdo = Database::connection();
                 \$tableFields = implode(', ', array_keys(\$this->fields));
                 \$cleanTableFields = str_replace(':', '', \$tableFields);
-                \$sql = "INSERT INTO {{ tableName }} (\$cleanTableFields) VALUES (\$tableFields)";
+                \$sql = "INSERT INTO {$this->dataCreateEntity->tableName} (\$cleanTableFields) VALUES (\$tableFields)";
                 \$stmt = \$pdo->prepare(\$sql);
         
                 return \$stmt->execute(\$this->fields);
