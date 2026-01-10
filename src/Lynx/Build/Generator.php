@@ -1,24 +1,11 @@
 <?php
-
 namespace Lynx\Build;
 
-class Generator
-{
-    static function generate()
-    {
-
-    }
-}
-
-<?php
-// src/CodeGenerator/EntityGenerator.php
-
-namespace CodeGenerator;
-
 use ReflectionClass;
+use ReflectionException;
 use ReflectionProperty;
 
-class EntityGenerator
+class Generator
 {
     private string $outputDir;
 
@@ -27,6 +14,9 @@ class EntityGenerator
         $this->outputDir = $outputDir;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function generate(string $modelClass): string
     {
         $reflection = new ReflectionClass($modelClass);
@@ -96,7 +86,7 @@ class EntityGenerator
             $methodsCode .= $this->generateGetterSetterCode($prop);
         }
 
-        $template = <<<PHP
+        return <<<PHP
         <?php
         
         namespace Generated;
@@ -119,8 +109,6 @@ class EntityGenerator
             }
         }
         PHP;
-
-        return $template;
     }
 
     private function generatePropertyCode(array $prop): string
