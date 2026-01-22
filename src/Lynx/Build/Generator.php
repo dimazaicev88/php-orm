@@ -1,4 +1,5 @@
 <?php
+
 namespace Lynx\Build;
 
 use ReflectionClass;
@@ -15,21 +16,21 @@ class Generator
     }
 
     /**
+     * @param GeneratorConfig $config
      * @throws ReflectionException
      */
-    public function generate(string $modelClass): string
+    public function generate(GeneratorConfig $config): void
     {
-        $reflection = new ReflectionClass($modelClass);
-        $className = $reflection->getShortName();
-        $generatedClass = $className . 'Entity';
+        foreach ($config->getClasses() as $modelClass) {
+            $reflection = new ReflectionClass($modelClass);
+            $className = $reflection->getShortName();
+            $generatedClass = $className;
+            $properties = $this->extractProperties($reflection);
+            $tableName = $this->getTableName($reflection);
 
-        $properties = $this->extractProperties($reflection);
-        $tableName = $this->getTableName($reflection);
-
-        $code = $this->generateEntityCode($generatedClass, $properties, $tableName);
-        $this->saveCode($generatedClass, $code);
-
-        return $generatedClass;
+            $code = $this->generateEntityCode($generatedClass, $properties, $tableName);
+            $this->saveCode($generatedClass, $code);
+        }
     }
 
     private function extractProperties(ReflectionClass $reflection): array

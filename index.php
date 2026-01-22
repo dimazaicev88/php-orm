@@ -2,6 +2,7 @@
 
 use Lynx\Attributes\Column;
 use Lynx\Attributes\Table;
+use Lynx\Build\GeneratorConfig;
 
 require_once "vendor/autoload.php";
 
@@ -25,4 +26,4 @@ $config->setClasses([
 ]);
 $config->outDir("/generated");
 $config->nameSpace("/generated");
-\Lynx\Build\Generator::generate($config);
+(new  \Lynx\Build\Generator())->generate($config);
