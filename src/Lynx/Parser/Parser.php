@@ -12,13 +12,14 @@ use ReflectionException;
 
 class Parser
 {
-    private const attrColumn = "Lynx\Attributes\Column";
-    private const attrTable = "Lynx\Attributes\Table";
+    private const string attrColumn = "Lynx\Attributes\Column";
+    private const string attrTable = "Lynx\Attributes\Table";
 
     /**
      * @param Config $config
      * @return array<ModelMetaData>
      * @throws ReflectionException
+     * @throws Exception
      */
     public function parse(Config $config): array
     {
@@ -32,6 +33,7 @@ class Parser
             $properties = $this->extractProperties($reflection);
             $tableName = $this->getTableName($reflection);
             $models[] = new ModelMetaData(
+                className: $className,
                 tableName: $tableName,
                 classFields: $properties,
             );
@@ -54,7 +56,6 @@ class Parser
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes();
 
-
             foreach ($attributes as $attribute) {
                 $attrName = $attribute->getName();
 
@@ -74,8 +75,7 @@ class Parser
     /**
      * @throws Exception
      */
-    private
-    function getTableName(ReflectionClass $reflection): string
+    private function getTableName(ReflectionClass $reflection): string
     {
         $tableName = "";
         $attributes = $reflection->getAttributes();
