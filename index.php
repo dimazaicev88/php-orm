@@ -2,7 +2,7 @@
 
 use Lynx\Attributes\Column;
 use Lynx\Attributes\Table;
-use Lynx\Build\GeneratorConfig;
+use Lynx\Build\Config;
 
 require_once "vendor/autoload.php";
 
@@ -20,10 +20,10 @@ class UserModel
 }
 
 
-$config = new GeneratorConfig();
+$config = new Config();
 $config->setClasses([
     UserModel::class
 ]);
 $config->outDir("/generated");
 $config->nameSpace("/generated");
-(new  \Lynx\Build\Generator())->generate($config);
+(new  \Lynx\Build\Generator())->parse($config);

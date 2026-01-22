@@ -2,7 +2,7 @@
 
 namespace Lynx\Build;
 
-class GeneratorConfig
+class Config
 {
     /**
      * @var array<string>

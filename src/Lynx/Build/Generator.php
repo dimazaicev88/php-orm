@@ -2,12 +2,16 @@
 
 namespace Lynx\Build;
 
+use Exception;
+use Lynx\DataClasses\DBColumn;
+use Lynx\DataClasses\ClassField;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 
 class Generator
 {
+
     private string $outputDir;
 
     public function __construct(string $outputDir = 'generated/')
@@ -15,69 +19,15 @@ class Generator
         $this->outputDir = $outputDir;
     }
 
-    /**
-     * @param GeneratorConfig $config
-     * @throws ReflectionException
-     */
-    public function generate(GeneratorConfig $config): void
+    public function generate(): void
     {
-        foreach ($config->getClasses() as $modelClass) {
-            $reflection = new ReflectionClass($modelClass);
-            $className = $reflection->getShortName();
-            $generatedClass = $className;
-            $properties = $this->extractProperties($reflection);
-            $tableName = $this->getTableName($reflection);
-
-            $code = $this->generateEntityCode($generatedClass, $properties, $tableName);
-            $this->saveCode($generatedClass, $code);
-        }
+//        $code = $this->generateEntityCode($generatedClass, $properties, $tableName);
+//        $this->saveCode($generatedClass, $code);
     }
 
-    private function extractProperties(ReflectionClass $reflection): array
-    {
-        $properties = [];
 
-        foreach ($reflection->getProperties() as $property) {
-            $attributes = $property->getAttributes();
-
-            $column = [];
-            foreach ($attributes as $attribute) {
-                $attrName = $attribute->getName();
-
-                if (str_contains($attrName, 'Column')) {
-                    $column = $attribute->getArguments();
-                    $column['name'] = $property->getName();
-                    $column['type'] = $property->getType()->getName();
-                }
-
-                if (str_contains($attrName, 'PrimaryKey')) {
-                    $column['primary'] = true;
-                }
-            }
-
-            if (!empty($column)) {
-                $properties[] = $column;
-            }
-        }
-
-        return $properties;
-    }
-
-    private function getTableName(ReflectionClass $reflection): string
-    {
-        $attributes = $reflection->getAttributes();
-
-        foreach ($attributes as $attribute) {
-            if (str_contains($attribute->getName(), 'Entity')) {
-                $args = $attribute->getArguments();
-                return $args['table'] ?? strtolower($reflection->getShortName());
-            }
-        }
-
-        return strtolower($reflection->getShortName());
-    }
-
-    private function generateEntityCode(string $className, array $properties, string $tableName): string
+    private
+    function generateEntityCode(string $className, array $properties, string $tableName): string
     {
         $propertiesCode = '';
         $methodsCode = '';
@@ -112,7 +62,8 @@ class Generator
         PHP;
     }
 
-    private function generatePropertyCode(array $prop): string
+    private
+    function generatePropertyCode(array $prop): string
     {
         $nullable = str_contains($prop['type'] ?? '', '?') ? 'null' : '';
         $default = $prop['default'] ?? $nullable;
@@ -125,7 +76,8 @@ class Generator
         );
     }
 
-    private function generateGetterSetterCode(array $prop): string
+    private
+    function generateGetterSetterCode(array $prop): string
     {
         $name = ucfirst($prop['name']);
 
@@ -144,7 +96,8 @@ class Generator
         PHP;
     }
 
-    private function generateColumnsArray(array $properties): string
+    private
+    function generateColumnsArray(array $properties): string
     {
         $columns = [];
         foreach ($properties as $prop) {
@@ -154,7 +107,8 @@ class Generator
         return implode(",\n            ", $columns);
     }
 
-    private function saveCode(string $className, string $code): void
+    private
+    function saveCode(string $className, string $code): void
     {
         if (!is_dir($this->outputDir)) {
             mkdir($this->outputDir, 0755, true);
