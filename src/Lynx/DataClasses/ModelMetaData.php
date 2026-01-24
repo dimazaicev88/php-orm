@@ -5,14 +5,14 @@ namespace Lynx\DataClasses;
 class ModelMetaData
 {
     /**
-     * @param string $className
+     * @param string $clasName
      * @param string $tableName
-     * @param array<ClassField> $classFields
+     * @param array<ClasField> $clasFields
      */
     public function __construct(
-        string $className,
-        string $tableName,
-        array  $classFields,
+        public string $clasName,
+        public string $tableName,
+        public array  $clasFields,
     )
     {
 

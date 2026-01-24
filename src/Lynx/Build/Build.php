@@ -36,42 +36,42 @@ class Build
         
         class User
         {
-            private static ?{$modelMetaData->className}Creat \$userCreat = null;
-            private static ?{$modelMetaData->className}Delete \$userDelete = null;
-            private static ?{$modelMetaData->className}Update \$userUpdate = null;
-            private static ?{$modelMetaData->className}UpdateBulk \$userUpdateBulk = null;
+            private static ?{$modelMetaData->clasName}Creat \$userCreat = null;
+            private static ?{$modelMetaData->clasName}Delete \$userDelete = null;
+            private static ?{$modelMetaData->clasName}Update \$userUpdate = null;
+            private static ?{$modelMetaData->clasName}UpdateBulk \$userUpdateBulk = null;
          
-            static function create(): {$modelMetaData->className}Creat
+            static function create(): {$modelMetaData->clasName}Creat
             {
                 if (self::\$userCreat === null) {
-                    self::\$userCreat = new {$modelMetaData->className}Creat();
+                    self::\$userCreat = new {$modelMetaData->clasName}Creat();
                 }
         
                 return self::\$userCreat;
             }
             
-            static function delete(): {$modelMetaData->className}Delete
+            static function delete(): {$modelMetaData->clasName}Delete
             {
                 if (self::\$userDelete === null) {
-                    self::\$userDelete = new {$modelMetaData->className}Delete();
+                    self::\$userDelete = new {$modelMetaData->clasName}Delete();
                 }
         
                 return self::\$userDelete;
             }
             
-            static function update(): {$modelMetaData->className}Update
+            static function update(): {$modelMetaData->clasName}Update
             {
                 if (self::\$userUpdate === null) {
-                    self::\$userUpdate = new {$modelMetaData->className}Update();
+                    self::\$userUpdate = new {$modelMetaData->clasName}Update();
                 }
         
                 return self::\$userUpdate;
             }
             
-            static function updateBulk(): {$modelMetaData->className}UpdateBulk
+            static function updateBulk(): {$modelMetaData->clasName}UpdateBulk
             {
                 if (self::\$userUpdateBulk === null) {
-                    self::\$userUpdateBulk = new {$modelMetaData->className}UpdateBulk();
+                    self::\$userUpdateBulk = new {$modelMetaData->clasName}UpdateBulk();
                 }
         
                 return self::\$userUpdateBulk;
@@ -90,7 +90,7 @@ class Build
         
         use Database\BaseEntity;
         
-        class {$modelMetaData->className}Creat 
+        class {$modelMetaData->clasName}Creat 
         {
             protected static string \$table = '$modelMetaData->tableName';
             private array \$fields;
@@ -152,14 +152,14 @@ class Build
     }
 
     private
-    function saveCode(string $className, string $code): void
+    function saveCode(string $clasName, string $code): void
     {
         if (!is_dir($this->outputDir)) {
             mkdir($this->outputDir, 0755, true);
         }
 
         file_put_contents(
-            $this->outputDir . $className . '.php',
+            $this->outputDir . $clasName . '.php',
             $code
         );
     }
