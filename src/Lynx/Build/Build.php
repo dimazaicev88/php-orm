@@ -72,17 +72,17 @@ class Build
         
         class User
         {
-            private static ?{$modelMetaData->clasName}Creat \$userCreat = null;
+            private static ?{$modelMetaData->clasName}Creat \$create = null;
           
             static function create(): {$modelMetaData->clasName}Creat
             {
-                if (self::\$userCreat === null) {
-                    self::\$userCreat = new {$modelMetaData->clasName}Creat();
+                if (self::\$create === null) {
+                    self::\$create = new {$modelMetaData->clasName}Creat();
                 }
         
-                return self::\$userCreat;
+                return self::\$create;
             }
-        }       
+        }
 
         PHP;
     }

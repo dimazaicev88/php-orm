@@ -14,5 +14,13 @@
     ],
     "require": {
       "ext-pdo": "*"
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }

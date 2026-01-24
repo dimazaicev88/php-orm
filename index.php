@@ -16,7 +16,7 @@ class User
     #[Column(name: "login")]
     public ?string $login;
 
-    #[Column(name: "login")]
+    #[Column(name: "name")]
     public ?string $name;
 }
 
