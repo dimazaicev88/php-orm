@@ -20,11 +20,23 @@ class User
     public ?string $name;
 }
 
+//\$config = [
+//    'host' => '127.0.0.1',
+//    'dbname' => 'test_db',
+//    'username' => 'root',
+//    'password' => 'root',
+//    'charset' => 'utf8mb4'
+//];
+
 
 $config = new Config();
-$config->setClasses([
-    User::class
-]);
-$config->outDir("/generated");
-$config->nameSpace("/generated");
+$config->setClasses([User::class])
+    ->setDbHost("127.0.0.1")
+    ->setDbName("test_db")
+    ->setDbUser("root")
+    ->setDbPassword("root")
+    ->setCharset("utf8")
+    ->setOutDir("/generated")
+    ->setNamespace("/generated");
+
 (new  Build())->generate($config);

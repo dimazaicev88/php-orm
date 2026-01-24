@@ -2,8 +2,6 @@
 
 namespace Lynx\Build;
 
-use Lynx\DataClasses\ModelMetaData;
-
 class Database
 {
 
@@ -16,24 +14,13 @@ class Database
         return <<<PHP
         <?php
         
-        use PDO;
-        use PDOException;
-            
-       class Database
+        class Database
         {
             private static ?Database \$instance = null;
             private PDO \$pdo;
         
             private function __construct()
             {
-                \$config = [
-                    'host' => '127.0.0.1',
-                    'dbname' => 'test_db',
-                    'username' => 'root',
-                    'password' => 'root',
-                    'charset' => 'utf8mb4'
-                ];
-        
                 \$dsn = "mysql:host={$config->getDbHost()};dbname={$config->getDbName()};charset={$config->getCharset()}";
         
                 \$options = [
@@ -42,13 +29,10 @@ class Database
                     PDO::ATTR_EMULATE_PREPARES => false,
                 ];
         
-                try {
-                    \$this->pdo = new PDO(\$dsn,$config->getDbUser(),$config->getDbPassword(), \$options);
-                } catch (PDOException \$e) {
-                    die("Database connection failed: " . \$e->getMessage());
-                }
+                \$this->pdo = new PDO(\$dsn, "{$config->getDbUser()}", "{$config->getDbPassword()}", \$options);
+        
             }
-
+        
             public static function connection(): PDO
             {
                 if (self::\$instance === null) {
@@ -57,7 +41,7 @@ class Database
                 return self::\$instance->pdo;
             }
         }
-
+        
         PHP;
     }
 
