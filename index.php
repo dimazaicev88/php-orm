@@ -37,6 +37,6 @@ $config->setClasses([User::class])
     ->setDbPassword("root")
     ->setCharset("utf8")
     ->setOutDir("/generated")
-    ->setNamespace("/generated");
+    ->setNamespace("Repository");
 
 (new  Build())->generate($config);
