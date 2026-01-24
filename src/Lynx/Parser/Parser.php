@@ -3,7 +3,7 @@
 namespace Lynx\Parser;
 
 use Exception;
-use Lynx\DataClasses\ClasField;
+use Lynx\DataClasses\ClassField;
 use Lynx\DataClasses\DBColumn;
 use Lynx\DataClasses\ModelMetaData;
 use ReflectionClass;
@@ -11,8 +11,8 @@ use ReflectionException;
 
 class Parser
 {
-    private const attrColumn = "Lynx\Attributes\Column";
-    private const attrTable = "Lynx\Attributes\Table";
+    private const string attrColumn = "Lynx\Attributes\Column";
+    private const string attrTable = "Lynx\Attributes\Table";
 
     /**
      * @param array $classes
@@ -34,7 +34,7 @@ class Parser
             $models[] = new ModelMetaData(
                 clasName: $className,
                 tableName: $tableName,
-                clasFields: $properties,
+                classFields: $properties,
             );
         }
 
@@ -42,13 +42,13 @@ class Parser
     }
 
     /**
-     * @return array<ClasField>
+     * @return array<ClassField>
      * @throws Exception
      */
     private function extractProperties(ReflectionClass $reflection): array
     {
         /**
-         * @var $properties array<ClasField>
+         * @var $properties array<ClassField>
          */
         $properties = [];
 
@@ -58,9 +58,9 @@ class Parser
                 $attrName = $attribute->getName();
 
                 if ($attrName === self::attrColumn) {
-                    $properties[] = new ClasField(
-                        fieldType: $property->getType()->getName(),
-                        fieldName: $property->getName(),
+                    $properties[] = new ClassField(
+                        type: $property->getType()->getName(),
+                        name: $property->getName(),
                         column: DBColumn::fromArray(column: $attribute->getArguments())
                     );
                 }
@@ -90,6 +90,7 @@ class Parser
         if (empty($tableName)) {
             throw new Exception('Table name cannot be empty');
         }
+
         return $tableName;
     }
 }

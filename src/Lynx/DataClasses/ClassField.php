@@ -2,12 +2,12 @@
 
 namespace Lynx\DataClasses;
 
-readonly class ClasField
+readonly class ClassField
 {
 
     function __construct(
-        public string    $fieldType = "string",
-        public string    $fieldName = "string",
+        public string    $type,
+        public string    $name,
         public ?DBColumn $column = null,
     )
     {

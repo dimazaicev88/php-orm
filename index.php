@@ -2,29 +2,29 @@
 
 use Lynx\Attributes\Column;
 use Lynx\Attributes\Table;
+use Lynx\Build\Build;
 use Lynx\Build\Config;
 
 require_once "vendor/autoload.php";
 
 #[Table(name: 'user')]
-class UserModel
+class User
 {
     #[Column(name: "id", notNull: true, autoIncrement: true)]
     public int $id;
 
     #[Column(name: "login")]
-    public string $login;
+    public ?string $login;
 
     #[Column(name: "login")]
-    public string $name;
+    public ?string $name;
 }
 
 
 $config = new Config();
 $config->setClasses([
-    UserModel::class
+    User::class
 ]);
 $config->outDir("/generated");
 $config->nameSpace("/generated");
-$models = (new  \Lynx\Parser\Parser())->parse($config->getClasses());
-var_dump($models);
+(new  Build())->generate($config);
