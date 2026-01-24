@@ -5,6 +5,7 @@ namespace Lynx\Build;
 use Lynx\DataClasses\ClassField;
 use Lynx\DataClasses\ModelMetaData;
 
+
 class CreateEntity
 {
     function genCreateEntityCode(ModelMetaData $modelMetaData): string
@@ -14,11 +15,11 @@ class CreateEntity
         return <<<PHP
         <?php
         
-        namespace Repository;
+        namespace Repository\\{$modelMetaData->className};
 
-        use Lynx\Database\Database;
+        use Repository\Database;
         
-        class {$modelMetaData->clasName}Creat 
+        class {$modelMetaData->className}Create
         {
             protected static string \$table = '$modelMetaData->tableName';
             private array \$fields;

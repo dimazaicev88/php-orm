@@ -5,6 +5,7 @@ namespace Lynx\Build;
 use Lynx\DataClasses\ModelMetaData;
 use Lynx\Parser\Parser;
 use ReflectionException;
+use PhpParser\{ParserFactory, PrettyPrinter};
 
 class Build
 {
@@ -25,14 +26,26 @@ class Build
         $createEntity = new CreateEntity();
         $listModelsMetaData = $parser->parse($config->getClasses());
         foreach ($listModelsMetaData as $modelMetaData) {
-            $genProviderCode = $this->genProviderCode($modelMetaData);
-            $genCreateEntity = $createEntity->genCreateEntityCode($modelMetaData);
-            $this->saveCode($modelMetaData->clasName, $genProviderCode);
-            $this->saveCode($modelMetaData->clasName . "Create", $genCreateEntity);
+            $providerCode = $this->genProviderCode($modelMetaData);
+            $createEntityCode = $createEntity->genCreateEntityCode($modelMetaData);
+            $this->saveCode(
+                outputDir: $this->outputDir . "Repository/" . ucfirst($modelMetaData->className . "/"),
+                clasName: $modelMetaData->className,
+                code: $providerCode
+            );
+            $this->saveCode(
+                outputDir: $this->outputDir . "Repository/" . ucfirst($modelMetaData->className . "/"),
+                clasName: $modelMetaData->className . "Create",
+                code: $createEntityCode
+            );
         }
 
         $databaseCode = (new Database())->genDatabaseProvider($config);
-        $this->saveCode("Database", $databaseCode);
+        $this->saveCode(
+            outputDir: $this->outputDir . "/Database/",
+            clasName: "Database",
+            code: $databaseCode
+        );
     }
 
 //    private static ?{$modelMetaData->clasName}Delete \$userDelete = null;
@@ -71,16 +84,16 @@ class Build
         return <<<PHP
         <?php
         
-        namespace Repository;
+        namespace Repository\\{$modelMetaData->className};
         
-        class User
+        class $modelMetaData->className
         {
-            private static ?{$modelMetaData->clasName}Creat \$create = null;
+            private static ?{$modelMetaData->className}Create \$create = null;
           
-            static function create(): {$modelMetaData->clasName}Creat
+            static function create(): {$modelMetaData->className}Create
             {
                 if (self::\$create === null) {
-                    self::\$create = new {$modelMetaData->clasName}Creat();
+                    self::\$create = new {$modelMetaData->className}Create();
                 }
         
                 return self::\$create;
@@ -90,12 +103,18 @@ class Build
         PHP;
     }
 
-    private function saveCode(string $clasName, string $code): void
+    private function saveCode(string $outputDir, string $clasName, string $code): void
     {
-        if (!is_dir($this->outputDir)) {
-            mkdir($this->outputDir, 0755, true);
+        if (!is_dir($outputDir)) {
+            mkdir($outputDir, 0755, true);
         }
 
-        file_put_contents($this->outputDir . $clasName . '.php', $code);
+
+        $parser = (new ParserFactory())->createForNewestSupportedVersion();
+        $ast = $parser->parse($code);
+        $prettyPrinter = new PrettyPrinter\Standard();
+        $prettyPrintFile = $prettyPrinter->prettyPrintFile($ast);
+
+        file_put_contents($outputDir . $clasName . '.php', $prettyPrintFile);
     }
 }

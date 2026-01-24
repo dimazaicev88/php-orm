@@ -14,6 +14,10 @@ class Database
         return <<<PHP
         <?php
         
+        namespace Repository;
+        
+        use PDO;
+        
         class Database
         {
             private static ?Database \$instance = null;

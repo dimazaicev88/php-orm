@@ -32,7 +32,7 @@ class Parser
             $properties = $this->extractProperties($reflection);
             $tableName = $this->getTableName($reflection);
             $models[] = new ModelMetaData(
-                clasName: $className,
+                className: ucfirst($className),
                 tableName: $tableName,
                 classFields: $properties,
             );

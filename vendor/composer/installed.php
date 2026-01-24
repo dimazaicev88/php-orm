@@ -3,7 +3,7 @@
         'name' => 'lynx/lynx',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'c3d037b9496cc0c2a594bc53287a4c4c32908e26',
+        'reference' => 'a2e7bd5812064cb82305e9c4347f31f1ba4fdf9a',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -58,7 +58,7 @@
         'lynx/lynx' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'c3d037b9496cc0c2a594bc53287a4c4c32908e26',
+            'reference' => 'a2e7bd5812064cb82305e9c4347f31f1ba4fdf9a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -80,7 +80,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../nikic/php-parser',
             'aliases' => array(),
-            'dev_requirement' => true,
+            'dev_requirement' => false,
         ),
         'nunomaduro/collision' => array(
             'pretty_version' => 'v8.8.3',
