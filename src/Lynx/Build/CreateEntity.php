@@ -9,7 +9,7 @@ class CreateEntity
 {
     function genCreateEntityCode(ModelMetaData $modelMetaData): string
     {
-        $setterCode = $this->generateSetterCode($modelMetaData->classFields);
+        $setterCode = $this->genSetterCode($modelMetaData->classFields);
 
         return <<<PHP
         <?php
@@ -42,7 +42,7 @@ class CreateEntity
      * @param array<ClassField> $fields
      * @return string
      */
-    private function generateSetterCode(array $fields): string
+    private function genSetterCode(array $fields): string
     {
         $resultCode = "";
         foreach ($fields as $field) {

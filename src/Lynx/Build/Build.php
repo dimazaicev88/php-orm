@@ -28,8 +28,11 @@ class Build
             $genProviderCode = $this->genProviderCode($modelMetaData);
             $genCreateEntity = $createEntity->genCreateEntityCode($modelMetaData);
             $this->saveCode($modelMetaData->clasName, $genProviderCode);
-            $this->saveCode($modelMetaData->clasName."Create", $genCreateEntity);
+            $this->saveCode($modelMetaData->clasName . "Create", $genCreateEntity);
         }
+
+        $databaseCode = (new Database())->genDatabaseProvider($config);
+        $this->saveCode("Database", $databaseCode);
     }
 
 //    private static ?{$modelMetaData->clasName}Delete \$userDelete = null;
