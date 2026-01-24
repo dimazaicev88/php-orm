@@ -4,6 +4,8 @@ namespace Lynx\Creator;
 
 
 
+use Lynx\Database\Database;
+
 class UserCreator
 {
     private array $fields;
@@ -53,6 +55,12 @@ class User
 }
 
 User::create()->
+setName("a8m")->
+setLogin(12)->
+save();
+
+
+User::update()->
 setName("a8m")->
 setLogin(12)->
 save();

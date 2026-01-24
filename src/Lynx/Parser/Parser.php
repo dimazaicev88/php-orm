@@ -3,8 +3,7 @@
 namespace Lynx\Parser;
 
 use Exception;
-use Lynx\Build\Config;
-use Lynx\DataClasses\ClassField;
+use Lynx\DataClasses\ClasField;
 use Lynx\DataClasses\DBColumn;
 use Lynx\DataClasses\ModelMetaData;
 use ReflectionClass;
@@ -16,24 +15,26 @@ class Parser
     private const attrTable = "Lynx\Attributes\Table";
 
     /**
-     * @param Config $config
+     * @param array $classes
      * @return array<ModelMetaData>
      * @throws ReflectionException
+     * @throws Exception
      */
-    public function parse(Config $config): array
+    public function parse(array $classes): array
     {
         /**
          * @var $models array<ModelMetaData>
          */
         $models = [];
-        foreach ($config->getClasses() as $modelClass) {
+        foreach ($classes as $modelClass) {
             $reflection = new ReflectionClass($modelClass);
             $className = $reflection->getShortName();
             $properties = $this->extractProperties($reflection);
             $tableName = $this->getTableName($reflection);
             $models[] = new ModelMetaData(
+                className: $className,
                 tableName: $tableName,
-                classFields: $properties,
+                clasFields: $properties,
             );
         }
 
@@ -41,25 +42,23 @@ class Parser
     }
 
     /**
-     * @return array<ClassField>
+     * @return array<ClasField>
      * @throws Exception
      */
     private function extractProperties(ReflectionClass $reflection): array
     {
         /**
-         * @var $properties array<ClassField>
+         * @var $properties array<ClasField>
          */
         $properties = [];
 
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes();
-
-
             foreach ($attributes as $attribute) {
                 $attrName = $attribute->getName();
 
                 if ($attrName === self::attrColumn) {
-                    $properties[] = new ClassField(
+                    $properties[] = new ClasField(
                         fieldType: $property->getType()->getName(),
                         fieldName: $property->getName(),
                         column: DBColumn::fromArray(column: $attribute->getArguments())
@@ -83,7 +82,7 @@ class Parser
         foreach ($attributes as $attribute) {
             if ($attribute->getName() === self::attrTable) {
                 $args = $attribute->getArguments();
-                $tableName = $args['table'] ?? strtolower($reflection->getShortName());
+                $tableName = $args['name'] ?? strtolower($reflection->getShortName());
                 break;
             }
         }

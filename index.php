@@ -26,4 +26,5 @@ $config->setClasses([
 ]);
 $config->outDir("/generated");
 $config->nameSpace("/generated");
-(new  \Lynx\Build\Generator())->parse($config);
+$models = (new  \Lynx\Parser\Parser())->parse($config->getClasses());
+var_dump($models);

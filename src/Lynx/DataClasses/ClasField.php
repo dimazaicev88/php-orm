@@ -2,7 +2,7 @@
 
 namespace Lynx\DataClasses;
 
-readonly class ClassField
+readonly class ClasField
 {
 
     function __construct(
