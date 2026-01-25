@@ -58,7 +58,7 @@ class LXC
 
 
 $config = new Config();
-$config->setClasses([LXC::class])
+$config->setClasses([User::class])
     ->setDbHost("127.0.0.1")
     ->setDbName("test_db")
     ->setDbUser("root")
