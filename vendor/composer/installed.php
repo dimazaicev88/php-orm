@@ -3,7 +3,7 @@
         'name' => 'lynx/lynx',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'd63976d3d3a644cd78f9da75dd687accdbb6cb92',
+        'reference' => '090b77a24f2e91404e3a1b4885a0c179b79ba5e8',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -58,7 +58,7 @@
         'lynx/lynx' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'd63976d3d3a644cd78f9da75dd687accdbb6cb92',
+            'reference' => '090b77a24f2e91404e3a1b4885a0c179b79ba5e8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
