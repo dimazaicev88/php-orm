@@ -17,24 +17,12 @@ readonly class DBColumn
     /**
      * @throws Exception
      */
-    public static function fromArray(array $column): DBColumn
+    public static function fromArray(array $column): static
     {
-        if (empty($column['name'])) {
-            throw new Exception('Column name cannot be empty');
-        }
-
-        $name = $column['name'];
-        $notNull = false;
-        $autoIncrement = false;
-        if (!empty($column['notNull'])) {
-            $notNull = $column['notNull'];
-        }
-
-        if (!empty($column['autoIncrement'])) {
-            $autoIncrement = $column['autoIncrement'];
-        }
-
-
-        return new static($name, $notNull, $autoIncrement);
+        return new static(
+            name: $column['name'] ?? throw new Exception('Column name cannot be empty'),
+            notNull: (bool)($column['notNull'] ?? false),
+            autoIncrement: (bool)($column['autoIncrement'] ?? false)
+        );
     }
 }
