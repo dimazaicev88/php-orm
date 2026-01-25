@@ -19,7 +19,7 @@ class Build
         $createEntity = new CreateEntity();
         $listModelsMetaData = $parser->parse($config->getClasses());
         foreach ($listModelsMetaData as $modelMetaData) {
-            $providerCode = $this->genProviderCode($config->getNamespace(), $modelMetaData);
+            $providerCode = $this->generateProviderCode($config->getNamespace(), $modelMetaData);
             $createEntityCode = $createEntity->genCreateEntityCode($config->getNamespace(), $modelMetaData);
             $path = join("/", [$config->getOutputDir(), "Repository", ucfirst($modelMetaData->className)]);
             $this->saveCode(
@@ -34,6 +34,12 @@ class Build
             );
         }
 
+        $this->generateDatabase($config);
+        $this->generateCache($config);
+    }
+
+    function generateDatabase(Config $config): void
+    {
         $databaseCode = (new Database())->genDatabaseProvider($config->getNamespace(), $config);
         $path = join("/", [$config->getOutputDir(), "Database"]);
         $this->saveCode(
@@ -42,6 +48,19 @@ class Build
             code: $databaseCode
         );
     }
+
+
+    function generateCache(Config $config): void
+    {
+        $cachePDOCode = (new CachePDO())->genCachePDOCode($config->getNamespace());
+        $path = join("/", [$config->getOutputDir(), "Cache"]);
+        $this->saveCode(
+            outputDir: $path,
+            clasName: "CachePDO",
+            code: $cachePDOCode
+        );
+    }
+
 
 //    private static ?{$modelMetaData->clasName}Delete \$userDelete = null;
 //            private static ?{$modelMetaData->clasName}Update \$userUpdate = null;
@@ -74,7 +93,7 @@ class Build
 //                return self::\$userUpdateBulk;
 //            }
 
-    private function genProviderCode(string $namespace, ModelMetaData $modelMetaData): string
+    private function generateProviderCode(string $namespace, ModelMetaData $modelMetaData): string
     {
         return <<<PHP
         <?php

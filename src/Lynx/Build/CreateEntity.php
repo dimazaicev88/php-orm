@@ -4,6 +4,7 @@ namespace Lynx\Build;
 
 use Lynx\DataClasses\ClassField;
 use Lynx\DataClasses\ModelMetaData;
+use Ptr\Cache\CachePDO;
 
 
 class CreateEntity
@@ -17,6 +18,7 @@ class CreateEntity
         
         namespace $namespace\Repository\\{$modelMetaData->className};
 
+        use $namespace\Cache\CachePDO;
         use $namespace\Database\Database;
         
         class {$modelMetaData->className}Create
@@ -32,8 +34,11 @@ class CreateEntity
                 \$tableFields = implode(', ', array_keys(\$this->fields));
                 \$cleanTableFields = str_replace(':', '', \$tableFields);
                 \$sql = "INSERT INTO $modelMetaData->tableName (\$cleanTableFields) VALUES (\$tableFields)";
-                \$stmt = \$pdo->prepare(\$sql);
-                \$stmt->execute(\$this->fields);
+                \$key = md5(\$sql);
+                if (CachePDO::get(md5(\$key))) {
+                    CachePDO::set(\$key, \$pdo->prepare(\$sql));
+                }
+                CachePDO::get(\$key)->execute(\$this->fields);
             }            
         }
         PHP;
