@@ -35,10 +35,12 @@ class CreateEntity
                 \$cleanTableFields = str_replace(':', '', \$tableFields);
                 \$sql = "INSERT INTO $modelMetaData->tableName (\$cleanTableFields) VALUES (\$tableFields)";
                 \$key = md5(\$sql);
-                if (CachePDO::get(md5(\$key))) {
-                    CachePDO::set(\$key, \$pdo->prepare(\$sql));
+                \$stmt = CachePDO::get(\$key);
+                if (!\$stmt) {
+                    \$stmt = \$pdo->prepare(\$sql);
+                    CachePDO::set(\$key, \$stmt);
                 }
-                CachePDO::get(\$key)->execute(\$this->fields);
+                \$stmt->execute(\$this->fields);
             }            
         }
         PHP;
