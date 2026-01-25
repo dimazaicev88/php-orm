@@ -14,6 +14,8 @@ class Config
     private string $charset = "";
     private string $dbUser = "";
     private string $dbPassword = "";
+    private string $namespace = "";
+    private string $outDir = "";
 
     /**
      * @return array<string>
@@ -46,6 +48,11 @@ class Config
     public function getDbPassword(): string
     {
         return $this->dbPassword;
+    }
+
+    public function getOutDir(): string
+    {
+        return $this->outDir;
     }
 
     public function setDbHost(string $dbHost): Config
@@ -87,13 +94,20 @@ class Config
         return $this;
     }
 
-    public function setOutDir(string $string): Config
+    public function setOutDir(string $outDir): Config
     {
+        $this->outDir = $outDir;
         return $this;
     }
 
-    public function setNameSpace(string $string): Config
+    public function setNameSpace(string $namespace): Config
     {
+        $this->namespace = $namespace;
         return $this;
+    }
+
+    public function getNamespace(): string
+    {
+        return $this->namespace;
     }
 }
