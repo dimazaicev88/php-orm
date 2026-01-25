@@ -49,7 +49,6 @@ class Build
         );
     }
 
-
     function generateCache(Config $config): void
     {
         $cachePDOCode = (new CachePDO())->genCachePDOCode($config->getNamespace());
@@ -106,11 +105,7 @@ class Build
           
             static function create(): {$modelMetaData->className}Create
             {
-                if (self::\$create === null) {
-                    self::\$create = new {$modelMetaData->className}Create();
-                }
-        
-                return self::\$create;
+                 return self::\$create ??= new {$modelMetaData->className}Create();
             }
         }
 
@@ -122,7 +117,6 @@ class Build
         if (!is_dir($outputDir)) {
             mkdir($outputDir, 0755, true);
         }
-
 
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
         $ast = $parser->parse($code);
