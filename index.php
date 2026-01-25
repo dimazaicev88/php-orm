@@ -20,6 +20,34 @@ class User
     public ?string $name;
 }
 
+#[Table(name: 'lxc')]
+class LXC
+{
+    #[Column(name: 'lxc_uid', notNull: true)]
+    public string $uid;
+
+    #[Column(name: 'proxmox_lxc_id', notNull: true)]
+    public int $proxmoxLxcId;
+
+    #[Column(name: 'parent_proxmox_lxc_id')]
+    public string $parentProxmoxLxcId;
+
+    #[Column(name: 'hostname')]
+    public string $hostname;
+
+    #[Column(name: 'ip')]
+    public string $ip;
+
+    #[Column(name: 'enable_recreate')]
+    public string $enableRecreate;
+
+    #[Column(name: 'no_branch', notNull: true)]
+    public bool $noBranch;
+
+    #[Column(name: 'lxc_type_code', notNull: true)]
+    public string $typeCode;
+}
+
 //\$config = [
 //    'host' => '127.0.0.1',
 //    'dbname' => 'test_db',
@@ -30,7 +58,7 @@ class User
 
 
 $config = new Config();
-$config->setClasses([User::class])
+$config->setClasses([LXC::class])
     ->setDbHost("127.0.0.1")
     ->setDbName("test_db")
     ->setDbUser("root")
