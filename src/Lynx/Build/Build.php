@@ -10,13 +10,6 @@ use PhpParser\{ParserFactory, PrettyPrinter};
 class Build
 {
 
-    private string $outputDir;
-
-    public function __construct(string $outputDir = 'generated/')
-    {
-        $this->outputDir = $outputDir;
-    }
-
     /**
      * @throws ReflectionException
      */
@@ -26,23 +19,25 @@ class Build
         $createEntity = new CreateEntity();
         $listModelsMetaData = $parser->parse($config->getClasses());
         foreach ($listModelsMetaData as $modelMetaData) {
-            $providerCode = $this->genProviderCode($modelMetaData);
-            $createEntityCode = $createEntity->genCreateEntityCode($modelMetaData);
+            $providerCode = $this->genProviderCode($config->getNamespace(), $modelMetaData);
+            $createEntityCode = $createEntity->genCreateEntityCode($config->getNamespace(), $modelMetaData);
+            $path = join("/", [$config->getOutputDir(), "Repository", ucfirst($modelMetaData->className)]);
             $this->saveCode(
-                outputDir: $this->outputDir . "Repository/" . ucfirst($modelMetaData->className . "/"),
+                outputDir: $path,
                 clasName: $modelMetaData->className,
                 code: $providerCode
             );
             $this->saveCode(
-                outputDir: $this->outputDir . "Repository/" . ucfirst($modelMetaData->className . "/"),
+                outputDir: $path,
                 clasName: $modelMetaData->className . "Create",
                 code: $createEntityCode
             );
         }
 
-        $databaseCode = (new Database())->genDatabaseProvider($config);
+        $databaseCode = (new Database())->genDatabaseProvider($config->getNamespace(), $config);
+        $path = join("/", [$config->getOutputDir(), "Database"]);
         $this->saveCode(
-            outputDir: $this->outputDir . "/Database/",
+            outputDir: $path,
             clasName: "Database",
             code: $databaseCode
         );
@@ -79,12 +74,12 @@ class Build
 //                return self::\$userUpdateBulk;
 //            }
 
-    private function genProviderCode(ModelMetaData $modelMetaData): string
+    private function genProviderCode(string $namespace, ModelMetaData $modelMetaData): string
     {
         return <<<PHP
         <?php
         
-        namespace Repository\\{$modelMetaData->className};
+        namespace $namespace\Repository\\{$modelMetaData->className};
         
         class $modelMetaData->className
         {
@@ -115,6 +110,7 @@ class Build
         $prettyPrinter = new PrettyPrinter\Standard();
         $prettyPrintFile = $prettyPrinter->prettyPrintFile($ast);
 
-        file_put_contents($outputDir . $clasName . '.php', $prettyPrintFile);
+        $path = join("/", [$outputDir, $clasName]);
+        file_put_contents($path . '.php', $prettyPrintFile);
     }
 }

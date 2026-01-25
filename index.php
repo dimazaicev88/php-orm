@@ -62,9 +62,9 @@ $config->setClasses([User::class])
     ->setDbHost("127.0.0.1")
     ->setDbName("test_db")
     ->setDbUser("root")
-    ->setDbPassword("root")
+    ->setDbPassword("rootpassword")
     ->setCharset("utf8")
-    ->setOutDir("/generated")
+    ->setOutputDir(str_replace("\\", "/", __DIR__) . "/generated")
     ->setNamespace("Ptr");
 
 (new  Build())->generate($config);

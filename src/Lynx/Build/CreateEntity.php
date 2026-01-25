@@ -8,16 +8,16 @@ use Lynx\DataClasses\ModelMetaData;
 
 class CreateEntity
 {
-    function genCreateEntityCode(ModelMetaData $modelMetaData): string
+    function genCreateEntityCode(string $namespace, ModelMetaData $modelMetaData): string
     {
         $setterCode = $this->genSetterCode($modelMetaData->classFields);
 
         return <<<PHP
         <?php
         
-        namespace Repository\\{$modelMetaData->className};
+        namespace $namespace\Repository\\{$modelMetaData->className};
 
-        use Repository\Database;
+        use $namespace\Database\Database;
         
         class {$modelMetaData->className}Create
         {

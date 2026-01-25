@@ -15,7 +15,7 @@ class Config
     private string $dbUser = "";
     private string $dbPassword = "";
     private string $namespace = "";
-    private string $outDir = "";
+    private string $outputDir = "";
 
     /**
      * @return array<string>
@@ -50,9 +50,9 @@ class Config
         return $this->dbPassword;
     }
 
-    public function getOutDir(): string
+    public function getOutputDir(): string
     {
-        return $this->outDir;
+        return $this->outputDir;
     }
 
     public function setDbHost(string $dbHost): Config
@@ -94,9 +94,9 @@ class Config
         return $this;
     }
 
-    public function setOutDir(string $outDir): Config
+    public function setOutputDir(string $OutputDir): Config
     {
-        $this->outDir = $outDir;
+        $this->outputDir = $OutputDir;
         return $this;
     }
 

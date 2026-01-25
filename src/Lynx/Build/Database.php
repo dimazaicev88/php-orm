@@ -6,15 +6,16 @@ class Database
 {
 
     /**
+     * @param string $namespace
      * @param Config $config
      * @return string
      */
-    function genDatabaseProvider(Config $config): string
+    function genDatabaseProvider(string $namespace,Config $config): string
     {
         return <<<PHP
         <?php
         
-        namespace Repository;
+        namespace $namespace\Database;
         
         use PDO;
         
