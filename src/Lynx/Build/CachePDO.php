@@ -29,11 +29,7 @@ class CachePDO
             
             static function get(string \$key): ?PDOStatement
             {
-                if (isset(self::\$cachePDO[\$key])) {
-                    return self::\$cachePDO[\$key];
-                }
-                
-                return null;
+                return self::\$cachePDO[\$key] ?? null;
             }
         }
 
