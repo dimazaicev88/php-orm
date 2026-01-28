@@ -2,15 +2,17 @@
 
 namespace Lynx\Build;
 
-class CachePDO
-{
-    function genCachePDOCode(string $namespace): string
-    {
+use Lynx\DataClasses\TemplateData;
 
+class CachePDO implements IGenerator
+{
+
+    function generate(TemplateData $templateData): string
+    {
         return <<<PHP
         <?php
         
-        namespace $namespace\Cache;
+        namespace $templateData->namespace\Cache;
         
         use PDO;
         use PDOStatement;

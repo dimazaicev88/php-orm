@@ -4,47 +4,48 @@ namespace Lynx\Build;
 
 use Lynx\DataClasses\ClassField;
 use Lynx\DataClasses\ModelMetaData;
+use Lynx\DataClasses\TemplateData;
 use Ptr\Cache\CachePDO;
 
 
-class CreateEntity
+class CreateEntity implements IGenerator
 {
-    function genCreateEntityCode(string $namespace, ModelMetaData $modelMetaData): string
-    {
-        $setterCode = $this->genSetterCode($modelMetaData->classFields);
-
-        return <<<PHP
-        <?php
-        
-        namespace $namespace\Repository\\{$modelMetaData->className};
-
-        use $namespace\Cache\CachePDO;
-        use $namespace\Database\Database;
-        
-        class {$modelMetaData->className}Create
-        {
-            protected static string \$table = '$modelMetaData->tableName';
-            private array \$fields;
-            
-            {$setterCode}
-                
-            function save(): void
-            {
-                \$pdo = Database::connection();
-                \$tableFields = implode(', ', array_keys(\$this->fields));
-                \$cleanTableFields = str_replace(':', '', \$tableFields);
-                \$sql = "INSERT INTO $modelMetaData->tableName (\$cleanTableFields) VALUES (\$tableFields)";
-                \$key = md5(\$sql);
-                \$stmt = CachePDO::get(\$key);
-                if (!\$stmt) {
-                    \$stmt = \$pdo->prepare(\$sql);
-                    CachePDO::set(\$key, \$stmt);
-                }
-                \$stmt->execute(\$this->fields);
-            }            
-        }
-        PHP;
-    }
+//    function genCreateEntityCode(string $namespace, ModelMetaData $modelMetaData): string
+//    {
+//        $setterCode = $this->genSetterCode($modelMetaData->classFields);
+//
+//        return <<<PHP
+//        <?php
+//
+//        namespace $namespace\Repository\\{$modelMetaData->className};
+//
+//        use $namespace\Cache\CachePDO;
+//        use $namespace\Database\Database;
+//
+//        class {$modelMetaData->className}Create
+//        {
+//            protected static string \$table = '$modelMetaData->tableName';
+//            private array \$fields;
+//
+//            {$setterCode}
+//
+//            function save(): void
+//            {
+//                \$pdo = Database::connection();
+//                \$tableFields = implode(', ', array_keys(\$this->fields));
+//                \$cleanTableFields = str_replace(':', '', \$tableFields);
+//                \$sql = "INSERT INTO $modelMetaData->tableName (\$cleanTableFields) VALUES (\$tableFields)";
+//                \$key = md5(\$sql);
+//                \$stmt = CachePDO::get(\$key);
+//                if (!\$stmt) {
+//                    \$stmt = \$pdo->prepare(\$sql);
+//                    CachePDO::set(\$key, \$stmt);
+//                }
+//                \$stmt->execute(\$this->fields);
+//            }
+//        }
+//        PHP;
+//    }
 
     /**
      * @param array<ClassField> $fields
@@ -70,4 +71,40 @@ class CreateEntity
         return $resultCode;
     }
 
+    function generate(TemplateData $templateData): string
+    {
+        $setterCode = $this->genSetterCode($templateData->modelMetaData->classFields);
+
+        return <<<PHP
+        <?php
+        
+        namespace $templateData->namespace\Repository\\{$templateData->modelMetaData->className};
+
+        use $templateData->namespace\Cache\CachePDO;
+        use $templateData->namespace\Database\Database;
+        
+        class {$templateData->modelMetaData->className}Create
+        {
+            protected static string \$table = '$templateData->modelMetaData->tableName';
+            private array \$fields;
+            
+            {$setterCode}
+                
+            function save(): void
+            {
+                \$pdo = Database::connection();
+                \$tableFields = implode(', ', array_keys(\$this->fields));
+                \$cleanTableFields = str_replace(':', '', \$tableFields);
+                \$sql = "INSERT INTO $templateData->modelMetaData->tableName (\$cleanTableFields) VALUES (\$tableFields)";
+                \$key = md5(\$sql);
+                \$stmt = CachePDO::get(\$key);
+                if (!\$stmt) {
+                    \$stmt = \$pdo->prepare(\$sql);
+                    CachePDO::set(\$key, \$stmt);
+                }
+                \$stmt->execute(\$this->fields);
+            }            
+        }
+        PHP;
+    }
 }

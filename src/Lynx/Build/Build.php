@@ -3,6 +3,7 @@
 namespace Lynx\Build;
 
 use Lynx\DataClasses\ModelMetaData;
+use Lynx\DataClasses\TemplateData;
 use Lynx\Parser\Parser;
 use ReflectionException;
 use PhpParser\{ParserFactory, PrettyPrinter};
@@ -20,7 +21,12 @@ class Build
         $listModelsMetaData = $parser->parse($config->getClasses());
         foreach ($listModelsMetaData as $modelMetaData) {
             $providerCode = $this->generateProviderCode($config->getNamespace(), $modelMetaData);
-            $createEntityCode = $createEntity->genCreateEntityCode($config->getNamespace(), $modelMetaData);
+            $createEntityCode = $createEntity->generate(
+                new TemplateData(
+                    namespace: $config->getNamespace(),
+                    modelMetaData: $modelMetaData
+                )
+            );
             $path = join("/", [$config->getOutputDir(), "Repository", ucfirst($modelMetaData->className)]);
             $this->saveCode(
                 outputDir: $path,
@@ -51,7 +57,11 @@ class Build
 
     function generateCache(Config $config): void
     {
-        $cachePDOCode = (new CachePDO())->genCachePDOCode($config->getNamespace());
+        $cachePDOCode = (new CachePDO())->generate(
+            new TemplateData(
+                namespace: $config->getNamespace()
+            )
+        );
         $path = join("/", [$config->getOutputDir(), "Cache"]);
         $this->saveCode(
             outputDir: $path,
