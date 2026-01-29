@@ -8,6 +8,30 @@ class DeleteEntity implements IGenerator
 {
     function generate(TemplateData $templateData): string
     {
+        $methodsCode = '';
+        foreach ($templateData->modelMetaData->classFields as $item) {
+            $operators = [
+                ['operator' => '=', 'text' => 'Eq'],
+                ['operator' => '<>', 'text' => 'NotEq'],
+                ['operator' => '>', 'text' => 'Gt'],
+                ['operator' => '>=', 'text' => 'GtEq'],
+                ['operator' => '<', 'text' => 'Lt'],
+                ['operator' => '=<', 'text' => 'LtEq'],
+                ['operator' => 'IN', 'text' => 'In'],
+                ['operator' => 'NOT IN', 'text' => 'NotIn'],
+            ];
+
+            foreach ($operators as $operator) {
+                $methodsCode .= $this->generateMethod(
+                    fieldName: $item->name,
+                    fieldType: $item->type,
+                    columnName: $item->column->name,
+                    operator: $operator['operator'],
+                    operatorName: $operator['text'],
+                );
+            }
+        }
+
         return <<<PHP
          <?php
                 
@@ -18,96 +42,28 @@ class DeleteEntity implements IGenerator
                 
                 class {$templateData->modelMetaData->className}Create
                 {
-                   
+                    $methodsCode
                 }
         
         PHP;
     }
 
-    private function generateEq(string $fieldName, string $fieldType, string $columnName): string
+    private function generateMethod(
+        string $fieldName,
+        string $fieldType,
+        string $columnName,
+        string $operator,
+        string $operatorName
+    ): string
     {
         return <<<PHP
-            function {$fieldName}Eq($fieldType \$value) {
-                \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => '='];
-                return \$this;
-            }
-
-        PHP;
-    }
-
-    private function generateNotEq(string $fieldName, string $fieldType, string $columnName): string
-    {
-        return <<<PHP
-            function {$fieldName}NotEq($fieldType \$value) {
-                \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => '<>'];
+            function {$fieldName}$operatorName($fieldType \$value) {
+                \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => $operator];
                 return \$this;
             }
         PHP;
     }
 
-
-    private function generateGt(string $fieldName, string $fieldType, string $columnName): string
-    {
-        return <<<PHP
-            function {$fieldName}Gt($fieldType \$value) {
-                \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => '>'];
-                return \$this;
-            }
-        PHP;
-    }
-
-
-    private function generateGtEq(string $fieldName, string $fieldType, string $columnName): string
-    {
-        return <<<PHP
-            function {$fieldName}LtEq($fieldType \$value) {
-                \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => '>='];
-                return \$this;
-            }
-        PHP;
-    }
-
-    private function generateLt(string $fieldName, string $fieldType, string $columnName): string
-    {
-        return <<<PHP
-            function {$fieldName}Lt($fieldType \$value) {
-                \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => '<'];
-                return \$this;
-            }
-        PHP;
-    }
-
-
-    private function generateLtEq(string $fieldName, string $fieldType, string $columnName): string
-    {
-        return <<<PHP
-            function {$fieldName}LtEq($fieldType \$value) {
-                \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => '<='];
-                return \$this;
-            }
-        PHP;
-    }
-
-    private function generateIn(string $fieldName, string $fieldType, string $columnName): string
-    {
-        return <<<PHP
-            function {$fieldName}In($fieldType \$value) {
-                \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => 'IN'];
-                return \$this;
-            }
-        PHP;
-    }
-
-
-    private function generateNotIn(string $fieldName, string $fieldType, string $columnName): string
-    {
-        return <<<PHP
-            function {$fieldName}NotIn($fieldType \$value) {
-                \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => 'NOT IN'];
-                return \$this;
-            }
-        PHP;
-    }
 
     private function generateBetween(string $fieldName, string $fieldType, string $columnName): string
     {

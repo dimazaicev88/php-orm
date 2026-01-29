@@ -70,6 +70,22 @@ class Build
         );
     }
 
+    function generateDelete(Config $config, ModelMetaData $modelMetaData): void
+    {
+        $databaseCode = (new DeleteEntity())->generate(
+            new TemplateData(
+                namespace: $config->getNamespace(),
+                modelMetaData: $modelMetaData
+            )
+        );
+        $path = join("/", [$config->getOutputDir(), "Database"]);
+        $this->saveCode(
+            outputDir: $path,
+            clasName: "Database",
+            code: $databaseCode
+        );
+    }
+
 
 //    private static ?{$modelMetaData->clasName}Delete \$userDelete = null;
 //            private static ?{$modelMetaData->clasName}Update \$userUpdate = null;
