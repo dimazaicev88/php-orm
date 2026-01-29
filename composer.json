@@ -17,7 +17,8 @@
         "nikic/php-parser": "^5.7"
     },
     "require-dev": {
-        "pestphp/pest": "^4.3"
+        "pestphp/pest": "^4.3",
+        "phpstan/phpstan": "^2.1"
     },
     "config": {
         "allow-plugins": {

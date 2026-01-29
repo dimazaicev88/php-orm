@@ -42,6 +42,7 @@ class Parser
     }
 
     /**
+     * @param ReflectionClass $reflection
      * @return array<ClassField>
      * @throws Exception
      */
@@ -71,10 +72,11 @@ class Parser
     }
 
     /**
+     * @param ReflectionClass $reflection
+     * @return string
      * @throws Exception
      */
-    private
-    function getTableName(ReflectionClass $reflection): string
+    private function getTableName(ReflectionClass $reflection): string
     {
         $tableName = "";
         $attributes = $reflection->getAttributes();

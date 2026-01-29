@@ -17,9 +17,9 @@ readonly class DBColumn
     /**
      * @throws Exception
      */
-    public static function fromArray(array $column): static
+    public static function fromArray(array $column): DBColumn
     {
-        return new static(
+        return new DBColumn(
             name: $column['name'] ?? throw new Exception('Column name cannot be empty'),
             notNull: (bool)($column['notNull'] ?? false),
             autoIncrement: (bool)($column['autoIncrement'] ?? false)
