@@ -2,11 +2,16 @@
 
 namespace Lynx\Build;
 
-use Lynx\DataClasses\ModelMetaData;
+use Lynx\Config\Config;
 use Lynx\DataClasses\TemplateData;
+use Lynx\Generator\CachePDO;
+use Lynx\Generator\CreateEntity;
+use Lynx\Generator\Database;
+use Lynx\Generator\DeleteEntity;
+use Lynx\Generator\Provider;
+use Lynx\IO\File;
 use Lynx\Parser\Parser;
 use ReflectionException;
-use PhpParser\{ParserFactory, PrettyPrinter};
 
 class Build
 {
@@ -14,142 +19,45 @@ class Build
     /**
      * @throws ReflectionException
      */
-    public function generate(Config $config): void
+    public function buildCode(Config $config): void
     {
         $parser = new Parser();
-        $createEntity = new CreateEntity();
         $listModelsMetaData = $parser->parse($config->getClasses());
         foreach ($listModelsMetaData as $modelMetaData) {
-            $providerCode = $this->generateProviderCode($config->getNamespace(), $modelMetaData);
-            $createEntityCode = $createEntity->generate(
-                new TemplateData(
-                    namespace: $config->getNamespace(),
-                    modelMetaData: $modelMetaData
+            //Provider
+            File::saveCode(
+                (new Provider($config))->dataForSaveFile(
+                    new TemplateData(namespace: $config->getNamespace(), modelMetaData: $modelMetaData)
                 )
             );
-            $path = join("/", [$config->getOutputDir(), "Repository", ucfirst($modelMetaData->className)]);
-            $this->saveCode(
-                outputDir: $path,
-                clasName: $modelMetaData->className,
-                code: $providerCode
+
+            //Create
+            File::saveCode(
+                (new CreateEntity($config))->dataForSaveFile(
+                    new TemplateData(namespace: $config->getNamespace(), modelMetaData: $modelMetaData)
+                )
             );
-            $this->saveCode(
-                outputDir: $path,
-                clasName: $modelMetaData->className . "Create",
-                code: $createEntityCode
+
+            //Delete
+            File::saveCode(
+                (new DeleteEntity($config))->dataForSaveFile(
+                    new TemplateData(namespace: $config->getNamespace(), modelMetaData: $modelMetaData)
+                )
             );
         }
 
-        $this->generateDatabase($config);
-        $this->generateCache($config);
-    }
-
-    function generateDatabase(Config $config): void
-    {
-        $databaseCode = (new Database())->genDatabaseProvider($config->getNamespace(), $config);
-        $path = join("/", [$config->getOutputDir(), "Database"]);
-        $this->saveCode(
-            outputDir: $path,
-            clasName: "Database",
-            code: $databaseCode
-        );
-    }
-
-    function generateCache(Config $config): void
-    {
-        $cachePDOCode = (new CachePDO())->generate(
-            new TemplateData(
-                namespace: $config->getNamespace()
+        //Database
+        File::saveCode(
+            (new Database($config))->dataForSaveFile(
+                new TemplateData(namespace: $config->getNamespace())
             )
         );
-        $path = join("/", [$config->getOutputDir(), "Cache"]);
-        $this->saveCode(
-            outputDir: $path,
-            clasName: "CachePDO",
-            code: $cachePDOCode
-        );
-    }
 
-    function generateDelete(Config $config, ModelMetaData $modelMetaData): void
-    {
-        $databaseCode = (new DeleteEntity())->generate(
-            new TemplateData(
-                namespace: $config->getNamespace(),
-                modelMetaData: $modelMetaData
+        //Cache
+        File::saveCode(
+            (new CachePDO($config))->dataForSaveFile(
+                new TemplateData(namespace: $config->getNamespace())
             )
         );
-        $path = join("/", [$config->getOutputDir(), "Database"]);
-        $this->saveCode(
-            outputDir: $path,
-            clasName: "Database",
-            code: $databaseCode
-        );
-    }
-
-
-//    private static ?{$modelMetaData->clasName}Delete \$userDelete = null;
-//            private static ?{$modelMetaData->clasName}Update \$userUpdate = null;
-//            private static ?{$modelMetaData->clasName}UpdateBulk \$userUpdateBulk = null;
-
-//    static function delete(): {$modelMetaData->clasName}Delete
-//{
-//if (self::\$userDelete === null) {
-//self::\$userDelete = new {$modelMetaData->clasName}Delete();
-//}
-//
-//return self::\$userDelete;
-//            }
-//
-//            static function update(): {$modelMetaData->clasName}Update
-//            {
-//                if (self::\$userUpdate === null) {
-//                self::\$userUpdate = new {$modelMetaData->clasName}Update();
-//                }
-//
-//                return self::\$userUpdate;
-//            }
-//
-//            static function updateBulk(): {$modelMetaData->clasName}UpdateBulk
-//            {
-//                if (self::\$userUpdateBulk === null) {
-//                self::\$userUpdateBulk = new {$modelMetaData->clasName}UpdateBulk();
-//                }
-//
-//                return self::\$userUpdateBulk;
-//            }
-
-    private function generateProviderCode(string $namespace, ModelMetaData $modelMetaData): string
-    {
-        return <<<PHP
-        <?php
-        
-        namespace $namespace\Repository\\{$modelMetaData->className};
-        
-        class $modelMetaData->className
-        {
-            private static ?{$modelMetaData->className}Create \$create = null;
-          
-            static function create(): {$modelMetaData->className}Create
-            {
-                 return self::\$create ??= new {$modelMetaData->className}Create();
-            }
-        }
-
-        PHP;
-    }
-
-    private function saveCode(string $outputDir, string $clasName, string $code): void
-    {
-        if (!is_dir($outputDir)) {
-            mkdir($outputDir, 0755, true);
-        }
-
-        $parser = (new ParserFactory())->createForNewestSupportedVersion();
-        $ast = $parser->parse($code);
-        $prettyPrinter = new PrettyPrinter\Standard();
-        $prettyPrintFile = $prettyPrinter->prettyPrintFile($ast);
-
-        $path = join("/", [$outputDir, $clasName]);
-        file_put_contents($path . '.php', $prettyPrintFile);
     }
 }

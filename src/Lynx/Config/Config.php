@@ -1,6 +1,6 @@
 <?php
 
-namespace Lynx\Build;
+namespace Lynx\Config;
 
 class Config
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lynx\Build;
+namespace Lynx\Generator;
 
 class CreateBulk
 {

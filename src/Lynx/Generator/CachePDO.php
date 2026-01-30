@@ -1,11 +1,19 @@
 <?php
 
-namespace Lynx\Build;
+namespace Lynx\Generator;
 
+use Lynx\Config\Config;
+use Lynx\DataClasses\DataForSaveFile;
 use Lynx\DataClasses\TemplateData;
 
 class CachePDO implements IGenerator
 {
+    private Config $config;
+
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
 
     function generate(TemplateData $templateData): string
     {
@@ -36,5 +44,15 @@ class CachePDO implements IGenerator
         }
 
         PHP;
+    }
+
+    function dataForSaveFile(TemplateData $templateData): DataForSaveFile
+    {
+        $cachePDOCode = $this->generate($templateData);
+        return new DataForSaveFile(
+            path: join("/", [$this->config->getOutputDir(), "Cache"]),
+            className: "CachePDO",
+            code: $cachePDOCode,
+        );
     }
 }

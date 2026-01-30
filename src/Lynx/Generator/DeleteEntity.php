@@ -1,11 +1,20 @@
 <?php
 
-namespace Lynx\Build;
+namespace Lynx\Generator;
 
+use Lynx\Config\Config;
+use Lynx\DataClasses\DataForSaveFile;
 use Lynx\DataClasses\TemplateData;
 
 class DeleteEntity implements IGenerator
 {
+    private Config $config;
+
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
     function generate(TemplateData $templateData): string
     {
         $methodsCode = '';
@@ -83,5 +92,19 @@ class DeleteEntity implements IGenerator
                 return \$this;
             }
         PHP;
+    }
+
+    function dataForSaveFile(TemplateData $templateData): DataForSaveFile
+    {
+        $createEntityCode = $this->generate($templateData);
+        return new DataForSaveFile(
+            path: join("/", [
+                $this->config->getOutputDir(),
+                "Repository",
+                ucfirst($templateData->modelMetaData->className)
+            ]),
+            className: $templateData->modelMetaData->className,
+            code: $createEntityCode,
+        );
     }
 }

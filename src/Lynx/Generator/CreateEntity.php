@@ -1,15 +1,23 @@
 <?php
 
-namespace Lynx\Build;
+namespace Lynx\Generator;
 
+use Lynx\Config\Config;
 use Lynx\DataClasses\ClassField;
-use Lynx\DataClasses\ModelMetaData;
+use Lynx\DataClasses\DataForSaveFile;
 use Lynx\DataClasses\TemplateData;
-use Ptr\Cache\CachePDO;
 
 
 class CreateEntity implements IGenerator
 {
+    private Config $config;
+
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
+
 //    function genCreateEntityCode(string $namespace, ModelMetaData $modelMetaData): string
 //    {
 //        $setterCode = $this->genSetterCode($modelMetaData->classFields);
@@ -106,5 +114,19 @@ class CreateEntity implements IGenerator
             }            
         }
         PHP;
+    }
+
+    function dataForSaveFile(TemplateData $templateData): DataForSaveFile
+    {
+        $createEntityCode = $this->generate($templateData);
+        return new DataForSaveFile(
+            path: join("/", [
+                $this->config->getOutputDir(),
+                "Repository",
+                ucfirst($templateData->modelMetaData->className)
+            ]),
+            className: $templateData->modelMetaData->className,
+            code: $createEntityCode,
+        );
     }
 }

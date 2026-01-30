@@ -3,7 +3,7 @@
 use Lynx\Attributes\Column;
 use Lynx\Attributes\Table;
 use Lynx\Build\Build;
-use Lynx\Build\Config;
+use Lynx\Config\Config;
 
 require_once "vendor/autoload.php";
 
@@ -67,4 +67,4 @@ $config->setClasses([LXC::class])
     ->setOutputDir(str_replace("\\", "/", __DIR__) . "/generated")
     ->setNamespace("Ptr");
 
-(new  Build())->generate($config);
+(new  Build())->buildCode($config);
