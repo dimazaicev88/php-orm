@@ -55,7 +55,7 @@ class Provider implements IGenerator
         
         namespace $templateData->namespace\Repository\\{$templateData->modelMetaData->className};
         
-        class $templateData->modelMetaData->className
+        class {$templateData->modelMetaData->className}
         {
             private static ?{$templateData->modelMetaData->className}Create \$create = null;
             private static ?{$templateData->modelMetaData->className}Delete \$delete = null;

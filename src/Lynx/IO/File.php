@@ -14,6 +14,8 @@ class File
         }
 
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
+
+
         $ast = $parser->parse($dataForSaveFile->code);
         $prettyPrinter = new PrettyPrinter\Standard();
         $prettyPrintFile = $prettyPrinter->prettyPrintFile($ast);

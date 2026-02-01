@@ -35,24 +35,27 @@ class DeleteEntity implements IGenerator
                     fieldName: $item->name,
                     fieldType: $item->type,
                     columnName: $item->column->name,
-                    operator: $operator['operator'],
+                    operator: '"' . $operator['operator'] . '"',
                     operatorName: $operator['text'],
+                    className: $templateData->modelMetaData->className,
                 );
             }
         }
 
         return <<<PHP
-         <?php
-                
-                namespace $templateData->namespace\Repository\\{$templateData->modelMetaData->className};
+         <?php             
+            
+         namespace $templateData->namespace\Repository\\{$templateData->modelMetaData->className};
+
+         use $templateData->namespace\Cache\CachePDO;
+         use $templateData->namespace\Database\Database;
         
-                use $templateData->namespace\Cache\CachePDO;
-                use $templateData->namespace\Database\Database;
-                
-                class {$templateData->modelMetaData->className}Create
-                {
-                    $methodsCode
-                }
+         class {$templateData->modelMetaData->className}Delete
+         {
+            private array \$fields = [];
+            
+            $methodsCode
+         }
         
         PHP;
     }
@@ -62,17 +65,17 @@ class DeleteEntity implements IGenerator
         string $fieldType,
         string $columnName,
         string $operator,
-        string $operatorName
+        string $operatorName,
+        string $className
     ): string
     {
         return <<<PHP
-            function {$fieldName}$operatorName($fieldType \$value) {
+            function $fieldName$operatorName($fieldType \$value): {$className}Delete  {
                 \$this->fields[] = ['field' => '$columnName', 'value' => \$value, 'operator' => $operator];
                 return \$this;
             }
         PHP;
     }
-
 
     private function generateBetween(string $fieldName, string $fieldType, string $columnName): string
     {

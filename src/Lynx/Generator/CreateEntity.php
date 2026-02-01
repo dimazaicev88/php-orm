@@ -93,7 +93,7 @@ class CreateEntity implements IGenerator
         
         class {$templateData->modelMetaData->className}Create
         {
-            protected static string \$table = '$templateData->modelMetaData->tableName';
+            protected static string \$table = '{$templateData->modelMetaData->tableName}';
             private array \$fields;
             
             {$setterCode}
@@ -103,7 +103,7 @@ class CreateEntity implements IGenerator
                 \$pdo = Database::connection();
                 \$tableFields = implode(', ', array_keys(\$this->fields));
                 \$cleanTableFields = str_replace(':', '', \$tableFields);
-                \$sql = "INSERT INTO $templateData->modelMetaData->tableName (\$cleanTableFields) VALUES (\$tableFields)";
+                \$sql = "INSERT INTO {$templateData->modelMetaData->tableName} (\$cleanTableFields) VALUES (\$tableFields)";
                 \$key = md5(\$sql);
                 \$stmt = CachePDO::get(\$key);
                 if (!\$stmt) {
