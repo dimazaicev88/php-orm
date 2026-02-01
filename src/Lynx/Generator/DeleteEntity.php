@@ -43,20 +43,18 @@ class DeleteEntity implements IGenerator
         }
 
         return <<<PHP
-         <?php             
-            
-         namespace $templateData->namespace\Repository\\{$templateData->modelMetaData->className};
-
-         use $templateData->namespace\Cache\CachePDO;
-         use $templateData->namespace\Database\Database;
+        <?php
+        namespace $templateData->namespace\Repository\\{$templateData->modelMetaData->className};
         
-         class {$templateData->modelMetaData->className}Delete
-         {
+        use $templateData->namespace\Cache\CachePDO;
+        use $templateData->namespace\Database\Database;
+        
+        class {$templateData->modelMetaData->className}Delete
+        {
             private array \$fields = [];
             
             $methodsCode
-         }
-        
+        }
         PHP;
     }
 
@@ -104,9 +102,9 @@ class DeleteEntity implements IGenerator
             path: join("/", [
                 $this->config->getOutputDir(),
                 "Repository",
-                ucfirst($templateData->modelMetaData->className)
+                ucfirst($templateData->modelMetaData->className),
             ]),
-            className: $templateData->modelMetaData->className,
+            className: $templateData->modelMetaData->className. "Delete",
             code: $createEntityCode,
         );
     }

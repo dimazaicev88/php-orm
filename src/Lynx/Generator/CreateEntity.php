@@ -125,7 +125,7 @@ class CreateEntity implements IGenerator
                 "Repository",
                 ucfirst($templateData->modelMetaData->className)
             ]),
-            className: $templateData->modelMetaData->className,
+            className: $templateData->modelMetaData->className . "Create",
             code: $createEntityCode,
         );
     }

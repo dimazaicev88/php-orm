@@ -61,7 +61,7 @@ class Database implements IGenerator
         $databaseCode = $this->generate($templateData);
         return new DataForSaveFile(
             path: join("/", [$this->config->getOutputDir(), "Database"]),
-            className: Database::class,
+            className: "Database",
             code: $databaseCode,
         );
     }

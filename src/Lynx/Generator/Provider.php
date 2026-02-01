@@ -83,7 +83,7 @@ class Provider implements IGenerator
                 "Repository",
                 ucfirst($templateData->modelMetaData->className)
             ]),
-            className: Database::class,
+            className: $templateData->modelMetaData->className,
             code: $databaseCode,
         );
     }
