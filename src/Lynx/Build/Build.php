@@ -26,21 +26,21 @@ class Build
         foreach ($listModelsMetaData as $modelMetaData) {
             //Provider
             File::saveCode(
-                (new Provider($config))->dataForSaveFile(
+                new Provider($config)->dataForSaveFile(
                     new TemplateData(namespace: $config->getNamespace(), modelMetaData: $modelMetaData)
                 )
             );
 
             //Create
             File::saveCode(
-                (new CreateEntity($config))->dataForSaveFile(
+                new CreateEntity($config)->dataForSaveFile(
                     new TemplateData(namespace: $config->getNamespace(), modelMetaData: $modelMetaData)
                 )
             );
 
             //Delete
             File::saveCode(
-                (new DeleteEntity($config))->dataForSaveFile(
+                new DeleteEntity($config)->dataForSaveFile(
                     new TemplateData(namespace: $config->getNamespace(), modelMetaData: $modelMetaData)
                 )
             );
@@ -48,14 +48,14 @@ class Build
 
         //Database
         File::saveCode(
-            (new Database($config))->dataForSaveFile(
+            new Database($config)->dataForSaveFile(
                 new TemplateData(namespace: $config->getNamespace())
             )
         );
 
         //Cache
         File::saveCode(
-            (new CachePDO($config))->dataForSaveFile(
+            new CachePDO($config)->dataForSaveFile(
                 new TemplateData(namespace: $config->getNamespace())
             )
         );

@@ -26,12 +26,18 @@ class LXC
     #[Column(name: 'lxc_uid', notNull: true)]
     public string $uid;
 
+    #[IgnoreDelete]
+    #[IgnoreUpdate]
     #[Column(name: 'proxmox_lxc_id', notNull: true)]
     public int $proxmoxLxcId;
 
+    #[IgnoreDelete]
+    #[IgnoreUpdate]
     #[Column(name: 'parent_proxmox_lxc_id')]
     public string $parentProxmoxLxcId;
 
+    #[IgnoreDelete]
+    #[IgnoreUpdate]
     #[Column(name: 'hostname')]
     public string $hostname;
 
